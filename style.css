@@ -1,7 +1,7 @@
 /*
 Theme Name: Estatein
 Theme URI: https://estatein.com
-Author: Estatein
+Author: Ruel Mendoza
 Author URI: https://estatein.com
 Description: A modern dark-theme real estate WordPress theme built from Figma design. Features property listings, testimonials, FAQ, and dynamic navigation.
 Version: 1.0.0
@@ -135,7 +135,11 @@ p {
   border: none;
   text-decoration: none;
 }
-
+@media (max-width: 425px) {
+  .btn {
+  width: 100%;;
+  }
+}
 .btn-primary {
   background-color: var(--purple-60);
   color: var(--absolutewhite);
@@ -509,15 +513,82 @@ p {
 }
 
 @media (max-width: 1024px) {
+
   .hero__main {
     flex-direction: column;
     padding: 60px 40px 0;
   }
-  .hero__image { max-height: 400px; width: 100%; }
+  .hero__image { width: 100%; }
   .hero__stats { flex-wrap: wrap; }
   .hero__features { flex-wrap: wrap; }
+  .hero {
+    flex-direction: column; /* Stack vertically */
+  }
+  .hero__image {
+    order: 1; /* Image moves to the top */
+  }
+
+  .hero__content {
+    order: 2; /* Content moves to the bottom */
+  }
+.hero__content {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers the badge and text */
+    text-align: center;
+  }
+
+  .hero-circular-badge {
+    order: -1; /* Forces the badge to the top of the flex stack */
+    margin-bottom: 2rem;
+    
+    /* Responsive Scaling */
+    /* Adjust '15vw' to set the relative size and '80px/150px' for min/max limits */
+    width: clamp(80px, 15vw, 150px); 
+    height: auto;
+    aspect-ratio: 1 / 1;
+    top: calc(52% - 0px)!important;
+    right: calc(50%)!important;
+  }
+}
+@media (max-width: 768px) {
+    /* Hides the contact button */
+  .nav-contact-btn {
+    display: none !important; 
+  }
+  .hero-circular-badge {
+        top: calc(47% - 0px) !important;
+        right: calc(47%) !important;
+  }
 }
 
+@media (max-width: 425px) {
+  .hero-circular-badge {
+        top: calc(23% - 0px) !important;
+        right: calc(71%) !important;
+        width: clamp(97px, 15vw, 150px)!important;
+        aspect-ratio: 1 / 1; /* Best for fluid scaling */
+        border-radius: 50%;
+  }
+}
+@media (max-width: 375px) {
+  .hero-circular-badge {
+        top: calc(19% - 0px) !important;
+        right: calc(71%) !important;
+        width: clamp(97px, 15vw, 150px)!important;
+        aspect-ratio: 1 / 1; /* Best for fluid scaling */
+        border-radius: 50%;
+  }
+}
+@media (max-width: 375px) {
+  .hero-circular-badge {
+        top: calc(14% - 0px) !important;
+        right: calc(67%) !important;
+        width: clamp(88px, 15vw, 153px)!important;
+        aspect-ratio: 1 / 1; /* Best for fluid scaling */
+        border-radius: 50%;
+  }
+}
 /* ============================================================
    SECTION LAYOUT
    ============================================================ */
@@ -834,7 +905,13 @@ p {
 .journey-section {
   padding: 80px 162px;
 }
+@media (max-width: 768px) {
+    /* Hides the contact button */
 
+  .journey-section{
+        padding: 80px 60px;
+  }
+}
 .journey-card {
   background: linear-gradient(135deg, var(--grey-10) 0%, var(--dark-blue15) 100%);
   border: 1px solid var(--neutral-800);
@@ -1310,4 +1387,30 @@ p {
 @keyframes rotateText {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
+}
+
+/* Small Mobile Layout (425px and below) */
+@media (max-width: 425px) {
+  #featured-properties {
+    display: block; /* Disables flex behavior */
+    width: 100%;    
+  }
+
+  #featured-properties .property-card, /* Or whatever your child class is named */
+  #featured-properties > div { 
+    width: 100% !important;
+    margin-bottom: 20px; /* Adds spacing between stacked items */
+    margin-left: 0;
+    margin-right: 0;
+  }
+  #featured-properties  .section__header{
+    display: block;;
+  }
+}
+@media (max-width: 320px) {
+    /* Hides the contact button */
+
+  .journey-section{
+        padding: 80px 25px;
+  }
 }

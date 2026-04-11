@@ -128,4 +128,18 @@
     });
   }
 
+  document.addEventListener('DOMContentLoaded', function() {
+    const navToggle = document.getElementById('nav-toggle');
+    // Change this to target the class you styled in CSS
+    const navMenu = document.querySelector('.nav-menu'); 
+
+    if (navToggle && navMenu) {
+        navToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('is-open');
+            
+            // Optional: Toggle a class on the button for hamburger-to-X animation
+            navToggle.classList.toggle('active');
+        });
+    }
+});
 })();
