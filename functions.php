@@ -399,3 +399,89 @@ function estatein_rewrite_flush() {
         flush_rewrite_rules();
 }
 register_activation_hook( __FILE__, 'estatein_rewrite_flush' );
+
+/* ============================================================
+   ACF: INNER PAGE HERO FIELD GROUP
+   Requires Advanced Custom Fields (free or Pro).
+   Note: Intelephense reports P1010 on acf_* calls because it
+   has no ACF stubs — the acf/init hook guarantees ACF is loaded.
+   ============================================================ */
+add_action( 'acf/init', 'estatein_register_acf_hero_fields' );
+function estatein_register_acf_hero_fields() {
+        acf_add_local_field_group( array( // phpcs:ignore -- ACF plugin function, loaded via acf/init hook
+                'key'    => 'group_estatein_inner_page_hero',
+                'title'  => 'Inner Page Hero',
+                'fields' => array(
+
+                        array(
+                                'key'           => 'field_hero_background_image',
+                                'label'         => 'Background Image',
+                                'name'          => 'hero_background_image',
+                                'type'          => 'image',
+                                'instructions'  => 'Recommended size: 960 × 700 px. Displayed as a panel on the left or right side.',
+                                'return_format' => 'url',
+                                'preview_size'  => 'estatein-hero',
+                                'library'       => 'all',
+                        ),
+
+                        array(
+                                'key'           => 'field_hero_image_position',
+                                'label'         => 'Image Position',
+                                'name'          => 'hero_image_position',
+                                'type'          => 'select',
+                                'instructions'  => 'Right / Left: image panel beside the text. Full Width: image spans the entire width above the text.',
+                                'choices'       => array(
+                                        'right' => 'Right',
+                                        'left'  => 'Left',
+                                        'full'  => 'Full Width',
+                                ),
+                                'default_value' => 'right',
+                                'allow_null'    => 0,
+                                'ui'            => 1,
+                        ),
+
+                        array(
+                                'key'          => 'field_hero_custom_heading',
+                                'label'        => 'Custom Heading',
+                                'name'         => 'hero_custom_heading',
+                                'type'         => 'textarea',
+                                'instructions' => 'HTML is allowed — e.g. <code>Find Your &lt;em&gt;Dream&lt;/em&gt; Home</code>. Leave blank to use the page title.',
+                                'placeholder'  => 'e.g. Find Your <em>Dream</em> Home',
+                                'new_lines'    => '',
+                                'rows'         => 3,
+                        ),
+
+                        array(
+                                'key'           => 'field_hero_enable_overlay',
+                                'label'         => 'Enable Dark Overlay',
+                                'name'          => 'hero_enable_overlay',
+                                'type'          => 'true_false',
+                                'instructions'  => 'Applies a dark gradient over the background image to improve text legibility.',
+                                'message'       => 'Enable overlay',
+                                'default_value' => 1,
+                                'ui'            => 1,
+                        ),
+
+                ),
+                'location' => array(
+                        array(
+                                array(
+                                        'param'    => 'post_type',
+                                        'operator' => '==',
+                                        'value'    => 'page',
+                                ),
+                                array(
+                                        'param'    => 'page_type',
+                                        'operator' => '!=',
+                                        'value'    => 'front_page',
+                                ),
+                        ),
+                ),
+                'menu_order'            => 0,
+                'position'              => 'normal',
+                'style'                 => 'default',
+                'label_placement'       => 'top',
+                'instruction_placement' => 'label',
+                'active'                => true,
+        ) );
+}

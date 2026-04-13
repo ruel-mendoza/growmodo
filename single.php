@@ -27,9 +27,11 @@ while ( have_posts() ) :
 				<?php echo esc_html( get_the_date() ); ?>
 			</time>
 		</div>
-		<h1><?php the_title(); ?></h1>
+		
 		<?php if ( has_excerpt() ) : ?>
 			<p><?php the_excerpt(); ?></p>
+			<?php else : ?>
+				<h1><?php the_title(); ?></h1>
 		<?php endif; ?>
 	</div>
 

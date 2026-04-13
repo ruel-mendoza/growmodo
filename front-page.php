@@ -71,15 +71,20 @@ get_header();
 		</div>
 					
 		<?php
-		$hero_image_id = get_theme_mod( 'estatein_hero_image' );
-		if ( $hero_image_id ) {
-			echo wp_get_attachment_image( $hero_image_id, 'estatein-hero', false, array( 'class' => 'hero__image', 'alt' => __( 'Real estate hero image', 'estatein' ) ) );
-		} else {
-		?>
-		<div class="hero__image" style="background:linear-gradient(135deg,#1a1a1a 0%,#211e2f 50%,#141414 100%);display:flex;align-items:center;justify-content:center;font-size:8rem;border-radius:12px;min-height:600px;flex:1;">
-			🏙️
-		</div>
-		<?php } ?>
+$hero_image_id  = get_theme_mod( 'estatein_hero_image' );
+$hero_image_url = $hero_image_id ? wp_get_attachment_image_url( $hero_image_id, 'estatein-hero' ) : '';
+
+// Define the background style: either the dynamic image or your fallback gradient
+$hero_bg_style = $hero_image_url 
+    ? "background-image: url('" . esc_url( $hero_image_url ) . "'); background-size: cover; background-position: center;" 
+    : "background: linear-gradient(135deg,#1a1a1a 0%,#211e2f 50%,#141414 100%);";
+?>
+
+<div class="hero__image" style="<?php echo $hero_bg_style; ?> display:flex; align-items:center; justify-content:center; font-size:8rem; border-radius:12px; min-height:600px; flex:1;">
+    <?php if ( ! $hero_image_url ) : ?>
+        🏙️
+    <?php endif; ?>
+</div>
 		
 	</div>
 
@@ -146,15 +151,34 @@ get_header();
 
 	if ( $featured_query->have_posts() ) :
 	?>
-	<div class="properties-grid">
-		<?php
-		while ( $featured_query->have_posts() ) {
-			$featured_query->the_post();
-			echo estatein_render_property_card( get_the_ID() );
-		}
-		wp_reset_postdata();
-		?>
+	<div class="carousel-wrapper">
+		<div class="properties-grid">
+			<?php
+			while ( $featured_query->have_posts() ) {
+				$featured_query->the_post();
+				echo estatein_render_property_card( get_the_ID() );
+			}
+			wp_reset_postdata();
+			?>
+		</div>
 	</div>
+		<?php
+		// Get actual count from your query
+		$total_count = $featured_query->post_count;
+		$total_formatted = str_pad($total_count, 2, '0', STR_PAD_LEFT);
+		?>
+
+		<div class="carousel-nav">
+			<div class="carousel-counter">
+				<span class="current" id="property-current">01</span> 
+				<span class="total">of <?php echo esc_html($total_formatted); ?></span>
+			</div>
+			
+			<div class="carousel-arrows">
+				<button class="arrow-btn prev" id="prop-prev" aria-label="Previous">←</button>
+				<button class="arrow-btn next" id="prop-next" aria-label="Next">→</button>
+			</div>
+		</div>
 	<?php else : ?>
 	<div style="text-align:center;padding:80px 20px;background:var(--grey-08);border:1px solid var(--neutral-800);border-radius:12px;">
 		<div style="font-size:4rem;margin-bottom:20px;">🏠</div>

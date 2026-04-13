@@ -142,4 +142,78 @@
         });
     }
 });
+
+  // ============================================================
+  // Properties Carousel Navigation
+  // (Footer script — DOM is ready, no DOMContentLoaded needed)
+  // ============================================================
+  var carouselGrid    = document.querySelector('.properties-grid');
+  var carouselNext    = document.getElementById('prop-next');
+  var carouselPrev    = document.getElementById('prop-prev');
+  var carouselCurrent = document.getElementById('property-current');
+
+  if (carouselGrid && carouselNext && carouselPrev) {
+
+    // True only when the grid is in carousel (flex/scrollable) mode.
+    function isCarouselActive() {
+      return carouselGrid.scrollWidth > carouselGrid.clientWidth + 1;
+    }
+
+    // --- Arrow disabled state ---
+    function updateArrows() {
+      if (!isCarouselActive()) {
+        carouselPrev.classList.add('disabled');
+        carouselNext.classList.add('disabled');
+        return;
+      }
+      var atStart = carouselGrid.scrollLeft <= 1;
+      var atEnd   = carouselGrid.scrollLeft + carouselGrid.clientWidth >= carouselGrid.scrollWidth - 1;
+      carouselPrev.classList.toggle('disabled', atStart);
+      carouselNext.classList.toggle('disabled', atEnd);
+    }
+
+    // --- Counter via Intersection Observer ---
+    var carouselCards = carouselGrid.querySelectorAll('.property-card');
+
+    if (carouselCards.length && carouselCurrent) {
+      var cardObserver = new IntersectionObserver(function (entries) {
+        // Skip when desktop grid — all cards visible simultaneously.
+        if (!isCarouselActive()) return;
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) {
+            var index = Array.prototype.indexOf.call(carouselCards, entry.target) + 1;
+            carouselCurrent.textContent = index.toString().padStart(2, '0');
+          }
+        });
+      }, { root: carouselGrid, threshold: 0.6 });
+
+      carouselCards.forEach(function (card) { cardObserver.observe(card); });
+    }
+
+    // --- Scroll step (one card + gap) ---
+    function getScrollStep() {
+      var card = carouselGrid.querySelector('.property-card');
+      if (!card) return 0;
+      var gap = parseInt(window.getComputedStyle(carouselGrid).gap) || 0;
+      return card.offsetWidth + gap;
+    }
+
+    carouselNext.addEventListener('click', function () {
+      if (isCarouselActive()) {
+        carouselGrid.scrollBy({ left: getScrollStep(), behavior: 'smooth' });
+      }
+    });
+
+    carouselPrev.addEventListener('click', function () {
+      if (isCarouselActive()) {
+        carouselGrid.scrollBy({ left: -getScrollStep(), behavior: 'smooth' });
+      }
+    });
+
+    carouselGrid.addEventListener('scroll', updateArrows, { passive: true });
+
+    // Initial state
+    updateArrows();
+  }
+
 })();
