@@ -1399,12 +1399,24 @@ p {
 .inner-page-hero.image-left .inner-page-hero__content  { order: 2; }
 .inner-page-hero.image-left .inner-page-hero__image    { order: 1; }
 
+/*
+ * Split-layout content: min-width: 0 overrides the browser default min-width: auto.
+ * Without this, a wide heading prevents the content div from shrinking to its flex-basis,
+ * the total exceeds 100%, and the image panel is pushed outside overflow: hidden — invisible.
+ */
+.inner-page-hero.image-left .inner-page-hero__content,
+.inner-page-hero.image-right .inner-page-hero__content {
+  min-width: 0;
+  text-align: left;
+  align-items: flex-start;
+}
+
 /* No image → full-width centred content */
 .inner-page-hero:not(.has-image) .inner-page-hero__content {
   flex-basis: 100%;
-  align-items: center;
-  text-align: center;
-  padding: 80px 40px;
+  /* align-items: center; */
+  /* text-align: center; */
+  padding: 80px 0px;
 }
 
 /* Full-width + no image: left-align overrides the generic centred fallback above */

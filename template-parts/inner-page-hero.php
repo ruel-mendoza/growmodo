@@ -3,9 +3,9 @@
  * Inner Page Hero Template Part
  *
  * Three layout modes controlled by the ACF 'hero_image_position' field:
- *   right       — text left, image panel right (default)
- *   left        — image panel left, text right
- *   full        — full-width image banner above centred text
+ *   right  — text left, image panel right (default)
+ *   left   — image panel left, text right
+ *   full   — full-width image banner above left-aligned text
  *
  * Fields registered via ACF in functions.php (group_estatein_inner_page_hero).
  *
@@ -20,8 +20,15 @@ if ( empty( $hero_heading ) ) {
 	$hero_heading = get_the_title();
 }
 
-// Background image URL.
-$hero_bg_url = $has_acf ? get_field( 'hero_background_image' ) : '';
+// Background image URL — handle URL string, attachment array, or attachment ID.
+$hero_bg_raw = $has_acf ? get_field( 'hero_background_image' ) : false;
+if ( is_array( $hero_bg_raw ) ) {
+	$hero_bg_url = ! empty( $hero_bg_raw['url'] ) ? $hero_bg_raw['url'] : '';
+} elseif ( is_numeric( $hero_bg_raw ) && $hero_bg_raw > 0 ) {
+	$hero_bg_url = (string) wp_get_attachment_image_url( (int) $hero_bg_raw, 'estatein-hero' );
+} else {
+	$hero_bg_url = is_string( $hero_bg_raw ) ? $hero_bg_raw : '';
+}
 
 // Image position: 'right' (default), 'left', or 'full'.
 $hero_image_side = $has_acf ? get_field( 'hero_image_position' ) : '';
@@ -51,17 +58,19 @@ if ( $hero_overlay ) {
 	class="<?php echo esc_attr( implode( ' ', $hero_classes ) ); ?>"
 	aria-label="<?php esc_attr_e( 'Page hero banner', 'estatein' ); ?>"
 >
-	<?php if ( $is_full_width && ! empty( $hero_bg_url ) ) : ?>
+	<?php if ( $is_full_width ) : ?>
 
-		<?php /* Full-width: image banner on top, centred text below */ ?>
-		<div
-			class="inner-page-hero__image"
-			style="background-image: url('<?php echo esc_url( $hero_bg_url ); ?>');"
-			role="img"
-			aria-hidden="true"
-		></div>
+		<?php /* Full-width: image banner on top, left-aligned text below */ ?>
+		<?php if ( ! empty( $hero_bg_url ) ) : ?>
+			<div
+				class="inner-page-hero__image"
+				style="background-image: url('<?php echo esc_url( $hero_bg_url ); ?>');"
+				role="img"
+				aria-hidden="true"
+			></div>
+		<?php endif; ?>
 
-		<div class="inner-page-hero__content" >
+		<div class="inner-page-hero__content">
 			<h1 class="inner-page-hero__heading">
 				<?php echo wp_kses_post( $hero_heading ); ?>
 			</h1>
@@ -73,18 +82,13 @@ if ( $hero_overlay ) {
 	<?php else : ?>
 
 		<?php /* Split layout: content panel + optional side image panel */ ?>
-		<div class="inner-page-hero__content" style="
-    padding: 0px;
-    text-align: left;
-    align-items: flex-start;
-">
-			
+		<div class="inner-page-hero__content">
+			<h1 class="inner-page-hero__heading">
 				<?php echo wp_kses_post( $hero_heading ); ?>
-			
+			</h1>
 			<?php if ( has_excerpt() ) : ?>
 				<p class="inner-page-hero__subtext"><?php echo wp_kses_post( get_the_excerpt() ); ?></p>
-						
-				<?php endif; ?>
+			<?php endif; ?>
 		</div>
 
 		<?php if ( ! empty( $hero_bg_url ) ) : ?>
